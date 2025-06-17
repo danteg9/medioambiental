@@ -17,4 +17,3 @@ services:
           property: connectionString
       - key: DEBUG
         value: "False"
-    staticPublishPath: backend/frontend
