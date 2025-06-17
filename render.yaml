@@ -9,7 +9,7 @@ services:
       rm -rf backend/frontend
       mv frontend/build backend/frontend
       python manage.py collectstatic --noinput
-    startCommand: gunicorn backend.wsgi:application
+    startCommand: gunicorn backend.backend.wsgi:application
     envVars:
       - key: DATABASE_URL
         fromDatabase:
