@@ -236,6 +236,8 @@ button.primary-button:hover {
 .lightbox-overlay {
   position: fixed;
   inset: 0;
+  left: 50%;
+  right: -50%;
   background: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
@@ -319,6 +321,18 @@ button.primary-button:hover {
 .lightbox-cerrar:hover {
   color: #ccc;
 }
+
+.lightbox-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 90vw;
+  max-height: 90vh;
+  box-sizing: border-box;
+}
+
 
 .nombre-editable {
   font-size: 1.5rem;
@@ -432,4 +446,3 @@ button.primary-button:hover {
   outline: none;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
 }
-
