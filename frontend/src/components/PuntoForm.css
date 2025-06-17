@@ -1,0 +1,435 @@
+.punto-form-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.punto-form {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    width: 90%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.punto-form h2 {
+    margin: 0 0 12px;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.punto-form label {
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.punto-form input,
+.punto-form textarea {
+    margin-top: 6px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    resize: none;
+    transition: border 0.2s ease;
+}
+
+.punto-form textarea {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.punto-form input:focus,
+.punto-form textarea:focus {
+    border-color: #4a90e2;
+    outline: none;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.form-buttons button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    background-color: #4a90e2;
+    color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.form-buttons button:hover {
+    background-color: #357ab7;
+}
+
+.form-buttons button[type="button"] {
+    background-color: #999;
+}
+
+.form-buttons button[type="button"]:hover {
+    background-color: #777;
+}
+
+.seccion-tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 16px;
+}
+
+.seccion-tabs button {
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    font-size: 1rem;
+    color: #888;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s ease, border-bottom 0.2s ease;
+    font-weight: normal;
+}
+
+.seccion-tabs button.activo {
+    color: #4a90e2;
+    border-bottom: 2px solid #4a90e2;
+    font-weight: bold;
+}
+
+.seccion-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.foto-input {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.foto-drop {
+    display: inline-block;
+    background: #f0f0f0;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 24px;
+    text-align: center;
+    color: #4a90e2;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.foto-drop input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+}
+
+.foto-preview span {
+    display: block;
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.ubicacion-text {
+    font-weight: normal;
+    margin-top: 6px;
+    margin-left: 10px;
+    font-size: 0.95rem;
+    padding: 10px 0;
+    color: #555;
+}
+
+button.primary-button {
+    background-color: #1976d2 !important;
+    color: white !important;
+    border: none !important;
+    padding: 8px 16px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    }
+
+button.primary-button:hover {
+    background-color: #115293 !important;
+}
+
+.foto-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  max-width: 100%;
+  scroll-snap-type: x mandatory;
+}
+
+.foto-cuadro {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  scroll-snap-align: start;
+  background-color: #f9f9f9;
+}
+
+.foto-cuadro img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.foto-eliminar {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  line-height: 18px;
+}
+
+.foto-agregar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: #888;
+  cursor: pointer;
+  background-color: #f0f0f0;
+}
+
+.foto-agregar:hover {
+  background-color: #e0e0e0;
+}
+
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  opacity: 0;
+  animation: fadeIn 0.15s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+
+.lightbox-content {
+  max-width: 90%;
+  max-height: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-content img {
+  max-height: 90vh;
+  max-width: 90vw;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.6);
+  transition: opacity 0.2s ease-in;
+  opacity: 0;
+  animation: fadeImageIn 0.2s forwards;
+}
+
+@keyframes fadeImageIn {
+  to {
+    opacity: 1;
+  }
+}
+
+
+.lightbox-btn {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 50%;
+  user-select: none;
+  z-index: 1001;
+}
+
+.lightbox-btn:hover {
+  background: white;
+}
+
+.lightbox-btn.izquierda {
+  left: 2vw;
+}
+
+.lightbox-btn.derecha {
+  right: 2vw;
+}
+
+.lightbox-cerrar {
+  position: fixed;
+  top: 2vh;
+  right: 2vw;
+  font-size: 1.5rem;
+  background: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
+  user-select: none;
+  z-index: 1001;
+}
+
+.lightbox-cerrar:hover {
+  color: #ccc;
+}
+
+.nombre-editable {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  outline: none;
+  margin-bottom: 0;
+  min-height: 2rem;
+}
+
+.nombre-editable.placeholder:empty::before {
+  content: "Nombre del punto";
+  color: #888;
+  pointer-events: none;
+}
+
+.nombre-editable.invalido {
+    border: 2px solid red;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.mensaje-error {
+  margin-top: 4px;
+  font-size: 0.9em;
+  color: red;
+  text-align: center;
+  animation: aparecer 0.2s ease-out;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.confirmacion-overlay {
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+}
+
+.confirmacion-popup {
+  background-color: white;
+  padding: 2em;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  margin: auto;
+}
+
+.confirmacion-popup h3 {
+  margin-top: 0;
+}
+
+.confirmacion-botones {
+  margin-top: 1.6em;
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+}
+
+.input-unidad {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.input-unidad input,
+.input-unidad select {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 1rem;
+  height: 36px;
+  background-color: white;
+  box-sizing: border-box;
+}
+
+.input-unidad input {
+  flex: 1;
+  min-width: 0;
+}
+
+.input-unidad select {
+  width: 80px;
+  flex-shrink: 0;
+  text-align: center;
+  margin-top: 6px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='30,50 70,90 110,50' stroke='%23666' stroke-width='15' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px;
+  padding-right: 30px;
+  cursor: pointer;
+}
+
+.input-unidad .sufijo {
+  width: 80px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.input-unidad input:focus,
+.input-unidad select:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+

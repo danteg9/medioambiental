@@ -1,0 +1,39 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+venv/
+env/
+*/env/
+*/venv/
+
+# Django specific
+*.sqlite3
+*.sqlite3-journal
+local_settings.py
+*/media/
+*/tmp/
+
+# React specific
+node_modules/
+build/
+.cache
+.parcel-cache
+coverage/
+*.log
+
+# OS or Editor-specific
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+*.idea/
+
+# Python specific
+*.log
+*.pot
+*.pyc

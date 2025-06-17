@@ -1,0 +1,111 @@
+.menu-popup {
+  position: absolute;
+  /* top y left los manejamos inline en JSX */
+  width: 300px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+
+  animation: fadeInMenu 0.2s ease-in-out;
+}
+
+@keyframes fadeInMenu {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.menu-popup h2 {
+  margin-top: 0;
+}
+
+.menu-popup button:not(.boton-principal):not(.boton-secundario) {
+  display: block;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: #f0f0f0;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  text-align: left;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.menu-popup button:focus {
+  outline: 2px solid #007bff;
+}
+
+.boton-menu {
+  position: absolute;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  width: 48px;
+  height: 48px;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.boton-menu.cerrar {
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+  z-index: 1100;
+}
+
+.boton-menu.cerrar:hover {
+  background-color:#ccc;
+}
+
+.boton-principal {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  width: 100%;  
+  background-color: #999;
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.boton-principal:hover {
+  background-color: #777
+}
+
+.boton-secundario {
+  background-color: #999;
+}
+
+.boton-secundario:hover {
+  background-color: #777;
+}
+
+.fuente-chica {
+  font-size: 14px;
+}
+
+.fuente-mediana {
+  font-size: 16px;
+}
+
+.fuente-grande {
+  font-size: 18px;
+}

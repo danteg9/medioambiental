@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: medioambiental
+    runtime: python
+    buildCommand: |
+      pip install -r requirements.txt
+      npm install --prefix frontend
+      npm run build --prefix frontend
+      rm -rf backend/frontend
+      mv frontend/build backend/frontend
+      python manage.py collectstatic --noinput
+    startCommand: gunicorn medioambiental.wsgi:application
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mi-base
+          property: connectionString
+      - key: DEBUG
+        value: "False"
+    staticPublishPath: backend/frontend
