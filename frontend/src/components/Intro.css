@@ -54,3 +54,28 @@
   color: #555;
   cursor: pointer;
 }
+
+.acerca-de-button {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  color: #666;
+  cursor: pointer;
+}
+
+.acerca-de-button:hover {
+  color: #000;
+}
+
+.acerca-de-modal {
+  max-width: 600px;
+  padding: 2em;
+}
+
+.acerca-de-modal p {
+  margin-top: 1em;
+  line-height: 1.5;
+}
