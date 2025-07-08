@@ -11,3 +11,28 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+body.fuente-chica {
+  font-size: 0.85rem;
+}
+
+body.fuente-mediana {
+  font-size: 1rem;
+}
+
+body.fuente-grande {
+  font-size: 1.15rem;
+}
+
+/* Escalar también elementos comunes */
+body.fuente-chica button,
+body.fuente-chica input,
+body.fuente-chica select {
+  font-size: 0.9rem;
+}
+
+body.fuente-grande button,
+body.fuente-grande input,
+body.fuente-grande select {
+  font-size: 1.1rem;
+}

@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Punto, Foto
+from django.contrib.auth import authenticate
+from .models import Punto, Foto, Usuario
 
 class FotoSerializer(serializers.ModelSerializer):
     imagen = serializers.SerializerMethodField()
@@ -25,3 +26,31 @@ class PuntoSerializer(serializers.ModelSerializer):
             'temperatura', 'humedad', 'viento',
             'fotos',
         ]
+
+class RegistroSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+    repetir_password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = Usuario
+        fields = ["nombres", "apellidos", "email", "password", "repetir_password"]
+
+    def validate(self, data):
+        if data["password"] != data["repetir_password"]:
+            raise serializers.ValidationError("Las contraseñas no coinciden")
+        return data
+
+    def create(self, validated_data):
+        validated_data.pop("repetir_password")
+        return Usuario.objects.create_user(**validated_data)
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        user = authenticate(email=data["email"], password=data["password"])
+        if not user:
+            raise serializers.ValidationError("Credenciales inválidas")
+        data["user"] = user
+        return data

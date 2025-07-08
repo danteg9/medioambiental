@@ -27,6 +27,11 @@
   margin-top: 0;
 }
 
+h3 {
+  text-align: center;
+}
+
+
 .menu-popup button:not(.boton-principal):not(.boton-secundario) {
   display: block;
   width: 100%;

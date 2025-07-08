@@ -37,7 +37,7 @@ const PuntoForm = ({ onClose, onSave, coords }) => {
     ];
 
 
-    // 🕓 Setear fecha actual al abrir el formulario
+    // Setear fecha actual al abrir el formulario
     useEffect(() => {
         const ahora = new Date();
         setFecha(ahora);
@@ -45,15 +45,22 @@ const PuntoForm = ({ onClose, onSave, coords }) => {
     // Esto se debería setear desde el padre con las coordenadas reales
     const [ubicacion, setUbicacion] = useState("");
 
+    const [latitud, setLatitud] = useState("");
+    const [longitud, setLongitud] = useState("");
+
+
     const { localeDateFns, localeMui } = useIdioma();
 
 
     useEffect(() => {
-        if (coords) {
+      if (coords) {
         const { lat, lng } = coords;
         setUbicacion(`Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`);
-        }
+        setLatitud(lat.toFixed(6));
+        setLongitud(lng.toFixed(6));
+      }
     }, [coords]);
+
 
     const handleFotoChange = (e) => {
         const files = Array.from(e.target.files);
@@ -102,7 +109,7 @@ const PuntoForm = ({ onClose, onSave, coords }) => {
           nombre,
           descripcion,
           tipo,
-          ubicacion,
+          ubicacion: `Lat: ${latitud}, Lng: ${longitud}`,
           fecha: fecha.toISOString(),
           fotos: fotos.map(f => f.file),
           cultivos,
@@ -328,13 +335,32 @@ const PuntoForm = ({ onClose, onSave, coords }) => {
             aria-labelledby="tab-geografica"
           >
             <div className="form-section">
-              <label htmlFor="ubicacion">Ubicación</label>
-              <div id="ubicacion" className="ubicacion-text">{ubicacion}</div>
+              <label htmlFor="latitud">Latitud</label>
+              <input
+                id="latitud"
+                type="text"
+                inputMode="decimal"
+                value={latitud}
+                onChange={(e) => setLatitud(e.target.value)}
+                placeholder="-34.603722"
+              />
+            </div>
+
+            <div className="form-section">
+              <label htmlFor="longitud">Longitud</label>
+              <input
+                id="longitud"
+                type="text"
+                inputMode="decimal"
+                value={longitud}
+                onChange={(e) => setLongitud(e.target.value)}
+                placeholder="-58.381592"
+              />
             </div>
 
             {/* Fotos */}
             <div className="form-section">
-              <div className="form-section-title">Fotos</div>
+              <label htmlFor="foto-input">Fotos</label>
               <div className="foto-grid">
                 {fotos.map((f, i) => (
                   <div className="foto-cuadro" key={i}>

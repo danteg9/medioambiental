@@ -5,9 +5,14 @@ import PuntoForm from "./PuntoForm";
 import PuntoPopupWrapper from "./PuntoPopupWrapper";
 import Menu from "./Menu";
 import Configuracion from "./Configuracion";
+import Intro from "./Intro";
+import Login from "./Login";
+import Registro from "./Register";
+import Tutorial from "./Tutorial";
 import "./Mapa.css";
 
 const Mapa = () => {
+    const mapRef = useRef(null);
     const [puntos, setPuntos] = useState([]);
     const [formVisible, setFormVisible] = useState(false);
     const [puntoSeleccionado, setPuntoSeleccionado] = useState(null);
@@ -18,6 +23,46 @@ const Mapa = () => {
     const toggleMenu = () => setMenuVisible((prev) => !prev);
 
     const API_URL = process.env.REACT_APP_API_URL;
+
+    const [mostrarIntro, setMostrarIntro] = useState(() => {
+        return !localStorage.getItem("sesion_iniciada");
+    });
+
+    const [sesionIniciada, setSesionIniciada] = useState(() => {
+        return !!localStorage.getItem("sesion_iniciada");
+    });
+
+    const [mostrarTutorial, setMostrarTutorial] = useState(() => {
+        const token = localStorage.getItem("access_token");
+        const tutorialCompletado = localStorage.getItem("tutorial_completado");
+        return token && !tutorialCompletado;
+    });
+
+
+    const pasosTutorial = [
+        {
+            selector: ".boton-menu",
+            texto: "Este es el menú principal. Desde aca podés acceder a la configuración o cerrar sesión.",
+        },
+        {
+            selector: ".boton-agregar",
+            texto: "Este botón te permite agregar un nuevo punto al mapa. Al activarlo, tenes que hacer click sobre el mapa para agregar un punto.",
+        },
+        {
+            selector: ".leaflet-control-zoom-in",
+            texto: "Estos botones te permiten acercar o alejar el mapa.",
+        }
+    ];
+
+    const [mapaInstancia, setMapaInstancia] = useState(null);
+  
+    const [mostrarLogin, setMostrarLogin] = useState(false);
+    const [mostrarRegistro, setMostrarRegistro] = useState(false);
+
+    const [nombreUsuario, setNombreUsuario] = useState("Usuario");
+
+    
+
 
     const AgregarMarcador = () => {
         const map = useMap();
@@ -32,7 +77,7 @@ const Mapa = () => {
                 if (!modoAgregar) return; // solo si el modo agregar está activo
                 clickCoords.current = e.latlng;
                 setFormVisible(true);
-                setModoAgregar(false); // desactiva el modo agregar después del clic
+                setModoAgregar(false); // desactiva el modo agregar después del click
             };
 
             map.on("click", handler);
@@ -93,11 +138,35 @@ const Mapa = () => {
         return null;
     };
 
+    const ObtenerInstanciaMapa = ({ onInstanciaLista }) => {
+        const map = useMap();
+
+        useEffect(() => {
+            if (map) {
+            onInstanciaLista(map);
+            }
+        }, [map]);
+
+        return null;
+    };
+
 
     const forzarAgregar = () => {
+    if (modoAgregar) {
+        if (!mapaInstancia) {
+        console.log("mapaInstancia no está disponible aún");
+        return;
+        }
+        const centro = mapaInstancia.getCenter();
+        console.log("Centro del mapa:", centro);
+        clickCoords.current = centro;
+        setFormVisible(true);
+        setModoAgregar(false);
+    } else {
         setModoAgregar(true);
         setFormVisible(false);
         clickCoords.current = null;
+    }
     };
 
     useEffect(() => {
@@ -118,21 +187,67 @@ const Mapa = () => {
     }, [modoAgregar]);
 
     useEffect(() => {
+        if (!sesionIniciada) return;
+
         const fetchPuntos = async () => {
             try {
-                const response = await fetch(`${API_URL}/api/puntos/listar/`);
-                if (!response.ok) throw new Error("Error al obtener puntos");
-
-                const data = await response.json();
-                setPuntos(data);
+            const response = await fetchConTokenRenovable(`${API_URL}/api/puntos/listar/`);
+            if (!response.ok) throw new Error("Error al obtener puntos");
+            const data = await response.json();
+            setPuntos(data);
             } catch (error) {
-                console.error(error);
-                alert("No se pudieron cargar los puntos del servidor");
+            console.error(error);
+            alert("No se pudieron cargar los puntos del servidor");
             }
         };
 
         fetchPuntos();
-    }, []);
+    }, [sesionIniciada]);
+
+    useEffect(() => {
+        const token = localStorage.getItem("access_token");
+        const tutorialCompletado = localStorage.getItem("tutorial_completado");
+        if (token && !tutorialCompletado) {
+            setMostrarTutorial(true);
+        } else {
+            setMostrarTutorial(false);
+        }
+    }, [sesionIniciada]);
+
+    useEffect(() => {
+        if (!sesionIniciada) return;
+
+        const fetchNombreUsuario = async () => {
+            const token = localStorage.getItem("access_token");
+            if (!token) return;
+
+            try {
+            const res = await fetch(`${API_URL}/api/usuario/`, {
+                headers: {
+                Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!res.ok) throw new Error("Error al obtener nombre de usuario");
+
+            const data = await res.json();
+
+            if (data?.nombres) {
+                setNombreUsuario(String(data.nombres));
+            }
+            } catch (err) {
+            console.error("No se pudo obtener el nombre del usuario:", err);
+            }
+        };
+
+        fetchNombreUsuario();
+        }, [sesionIniciada]);
+
+
+
+    const handleLogin = () => setMostrarLogin(true);
+    const handleRegister = () => setMostrarRegistro(true);
+
 
 
 
@@ -150,14 +265,30 @@ const Mapa = () => {
         </button>
 
         <button
-            className="boton-agregar"
+            className={`boton-agregar ${modoAgregar ? "activo" : ""}`}
             onClick={forzarAgregar}
-            title="Agregar nuevo punto"
+            title={modoAgregar ? "Crear punto en el centro del mapa" : "Agregar nuevo punto"}
             aria-label="Agregar nuevo punto"
             role="button"
-            >
+        >
             +
         </button>
+
+        {modoAgregar && (
+        <button
+            className="boton-agregar cancelar-agregar"
+            onClick={() => {
+            setModoAgregar(false);
+            clickCoords.current = null;
+            }}
+            title="Cancelar agregar punto"
+            aria-label="Cancelar agregar punto"
+            role="button"
+        >
+            ✕
+        </button>
+        )}
+
         <MapContainer
             center={[-34.6, -58.4]}
             zoom={6}
@@ -167,6 +298,7 @@ const Mapa = () => {
             role="region"
             aria-label="Mapa interactivo con puntos ambientales"
         >
+            <ObtenerInstanciaMapa onInstanciaLista={(mapa) => setMapaInstancia(mapa)} />
             <TileLayer
             url="https://wms.ign.gob.ar/geoserver/gwc/service/tms/1.0.0/capabaseargenmap@EPSG%3A3857@png/{z}/{x}/{-y}.png"
             minZoom={3}
@@ -214,24 +346,63 @@ const Mapa = () => {
             <PuntoPopupWrapper punto={puntoSeleccionado} onClose={() => setPuntoSeleccionado(null)} />
         )}
         {menuVisible && (
-            <Menu
-                onClose={() => setMenuVisible(false)}
-                onAbrirConfiguracion={() => {
-                setMenuVisible(false);            // Cierra el menú
-                setMostrarConfiguracion(true);    // Abre la vista de configuración
-                }}
-            />
+        <Menu
+            nombreUsuario={nombreUsuario}
+            onClose={() => setMenuVisible(false)}
+            onAbrirConfiguracion={() => {
+            setMenuVisible(false);
+            setMostrarConfiguracion(true);
+            }}
+            onCerrarSesion={handleCerrarSesion}
+        />
         )}
+        {mostrarIntro && (
+        <Intro
+            onLogin={handleLogin}
+            onRegister={handleRegister}
+        />
+        )}
+        {mostrarLogin && (
+        <Login
+            onClose={() => setMostrarLogin(false)}
+            onSuccess={() => {
+                setMostrarLogin(false);
+                setMostrarIntro(false);
+                setSesionIniciada(true);
+            }}
+        />
+        )}
+
+        {mostrarRegistro && (
+        <Registro
+            onClose={() => setMostrarRegistro(false)}
+            onSuccess={() => {
+                setMostrarRegistro(false);
+                setMostrarIntro(false);
+                setSesionIniciada(true);
+            }}
+        />
+        )}
+
+        {mostrarTutorial && (
+        <Tutorial
+            pasos={pasosTutorial}
+            onFinish={() => {
+            localStorage.setItem("tutorial_completado", "true");
+            setMostrarTutorial(false);
+            }}
+        />
+        )}
+
+
         </>
     );
 
     async function handleGuardarPunto(datos) {
         if (!clickCoords.current) return;
 
-        // ✅ Cerramos primero el formulario
         setFormVisible(false);
 
-        // ✅ Guardamos una copia local de las coordenadas antes de borrarlas
         const coords = { ...clickCoords.current };
         clickCoords.current = null;
 
@@ -246,7 +417,7 @@ const Mapa = () => {
         for (const key in puntoConCoords) {
             if (key === "fotos") {
                 puntoConCoords.fotos.forEach((foto) => {
-                    formData.append("fotos", foto); // Es importante que se llame igual que en request.FILES.getlist()
+                    formData.append("fotos", foto); // que se llame igual que en request.FILES.getlist()
                 });
             } else {
                 formData.append(key, puntoConCoords[key]);
@@ -254,7 +425,7 @@ const Mapa = () => {
         }
 
         try {
-            const response = await fetch(`${API_URL}/api/puntos/crear/`, {
+            const response = await fetchConTokenRenovable(`${API_URL}/api/puntos/crear/`, {
                 method: "POST",
                 body: formData,
             });
@@ -263,14 +434,52 @@ const Mapa = () => {
                 throw new Error("Error al guardar el punto");
             }
 
-            // Esperar a que se cree exitosamente, y luego traer todos los puntos
-            const res = await fetch(`${API_URL}/api/puntos/listar/`);
+            // Esperar a que se cree y dsps traer todos los puntos
+            const res = await fetchConTokenRenovable(`${API_URL}/api/puntos/listar/`);
             const data = await res.json();
-            setPuntos(data); // ✅ Aquí están todos los puntos con las fotos correctas
+            setPuntos(data);
         } catch (error) {
             console.error(error);
             alert("No se pudo guardar el punto");
         }
+    }
+
+    async function fetchConTokenRenovable(url, options = {}) {
+        const access = localStorage.getItem("access_token");
+        const refresh = localStorage.getItem("refresh_token");
+
+        const res = await fetch(url, {
+            ...options,
+            headers: {
+            ...options.headers,
+            Authorization: `Bearer ${access}`,
+            },
+        });
+
+        if (res.status === 401 && refresh) {
+            // Intentar refresh
+            const refreshRes = await fetch(`${API_URL}/api/token/refresh/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refresh }),
+            });
+
+            if (refreshRes.ok) {
+            const data = await refreshRes.json();
+            localStorage.setItem("access_token", data.access);
+
+            // Reintentar con el nuevo token
+            return fetch(url, {
+                ...options,
+                headers: {
+                ...options.headers,
+                Authorization: `Bearer ${data.access}`,
+                },
+            });
+            }
+        }
+
+        return res;
     }
 
 
@@ -278,6 +487,21 @@ const Mapa = () => {
         setFormVisible(false);
         clickCoords.current = null;
     }
+
+    function handleCerrarSesion() {
+        setMostrarIntro(true);
+        setMostrarConfiguracion(false);
+        setFormVisible(false);
+        setPuntoSeleccionado(null);
+        setMenuVisible(false);
+        setSesionIniciada(false);
+        setPuntos([]);
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("sesion_iniciada");
+    }
+
+
     
 };
 

@@ -1,10 +1,16 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Configuracion.css";
 
 const Configuracion = ({ onClose }) => {
   const popupRef = useRef();
+  const [tamanio, setTamanio] = useState("mediana");
 
   useEffect(() => {
+    const saved = localStorage.getItem("tamanioFuente");
+    if (saved === "chica" || saved === "mediana" || saved === "grande") {
+      setTamanio(saved);
+    }
+
     const firstFocusable = popupRef.current.querySelector("input, button");
     firstFocusable?.focus();
   }, []);
@@ -13,6 +19,7 @@ const Configuracion = ({ onClose }) => {
     localStorage.setItem("tamanioFuente", valor);
     document.body.classList.remove("fuente-chica", "fuente-mediana", "fuente-grande");
     document.body.classList.add(`fuente-${valor}`);
+    setTamanio(valor); // actualizar el estado
   };
 
   return (
@@ -32,6 +39,7 @@ const Configuracion = ({ onClose }) => {
             type="radio"
             name="fuente"
             value="chica"
+            checked={tamanio === "chica"}
             onChange={(e) => guardarTamanio(e.target.value)}
           />
           Chica
@@ -41,7 +49,7 @@ const Configuracion = ({ onClose }) => {
             type="radio"
             name="fuente"
             value="mediana"
-            defaultChecked
+            checked={tamanio === "mediana"}
             onChange={(e) => guardarTamanio(e.target.value)}
           />
           Mediana
@@ -51,6 +59,7 @@ const Configuracion = ({ onClose }) => {
             type="radio"
             name="fuente"
             value="grande"
+            checked={tamanio === "grande"}
             onChange={(e) => guardarTamanio(e.target.value)}
           />
           Grande

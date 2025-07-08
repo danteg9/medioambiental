@@ -16,7 +16,8 @@
 }
 
 .boton-agregar,
-.boton-menu {
+.boton-menu,
+.cancelar-agregar {
   position: absolute;
   background-color: #1976d2;
   color: white;
@@ -45,9 +46,24 @@
   left: 20px;
 }
 
+.cancelar-agregar {
+  left: 80px;
+  background-color: #e74c3c;
+}
+
 .boton-agregar:hover,
 .boton-menu:hover {
   background-color: #1565c0;
+}
+
+.boton-agregar.activo {
+    background-color: #198754; /* verde */
+    color: white;
+}
+
+
+.cancelar-agregar:hover {
+  background-color: #c0392b;
 }
 
 .marker-keyboard-access:focus {
