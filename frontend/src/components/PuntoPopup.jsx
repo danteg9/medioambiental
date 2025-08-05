@@ -13,6 +13,7 @@ const PuntoPopup = ({ punto, onClose }) => {
   const modalRef = useRef(null); // para atrapar foco
   const cerrarBtnRef = useRef(null); // foco inicial
   const ultimoActivoRef = useRef(null);
+  const botonConfirmarRef = useRef(null);
 
   const [miMail, setMiMail] = useState(null);
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
@@ -125,6 +126,13 @@ const borrarPunto = async () => {
     alert("Error al borrar el punto.");
   }
 };
+
+  useEffect(() => {
+    if (mostrarConfirmacion && botonConfirmarRef.current) {
+      botonConfirmarRef.current.focus();
+    }
+  }, [mostrarConfirmacion]);
+
 
   return (
     <div className="punto-form-overlay">
@@ -349,7 +357,7 @@ const borrarPunto = async () => {
             <h3 id="confirm-delete-title">¿Borrar punto?</h3>
             <p id="confirm-delete-desc">¿Estás seguro de que querés borrar este punto?</p>
             <div className="botones">
-              <button onClick={borrarPunto}>Sí, borrar</button>
+              <button ref={botonConfirmarRef} onClick={borrarPunto}>Sí, borrar</button>
               <button className="cerrar" onClick={() => setMostrarConfirmacion(false)}>
                 Cancelar
               </button>
