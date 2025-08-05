@@ -10,6 +10,7 @@ import Login from "./Login";
 import Registro from "./Register";
 import Tutorial from "./Tutorial";
 import "./Mapa.css";
+import ListadoUsuarios from "./ListadoUsuarios";
 
 const Mapa = () => {
     const mapRef = useRef(null);
@@ -20,6 +21,7 @@ const Mapa = () => {
     const [modoAgregar, setModoAgregar] = useState(false);
     const [menuVisible, setMenuVisible] = useState(false);
     const [mostrarConfiguracion, setMostrarConfiguracion] = useState(false);
+    const [mostrarUsuarios, setMostrarUsuarios] = useState(false);
     const toggleMenu = () => setMenuVisible((prev) => !prev);
 
     const API_URL = process.env.REACT_APP_API_URL;
@@ -60,6 +62,8 @@ const Mapa = () => {
     const [mostrarRegistro, setMostrarRegistro] = useState(false);
 
     const [nombreUsuario, setNombreUsuario] = useState("Usuario");
+    const [isStaff, setIsStaff] = useState(false);
+    const [isSuperuser, setIsSuperuser] = useState(false);
 
     
 
@@ -235,8 +239,14 @@ const Mapa = () => {
             if (data?.nombres) {
                 setNombreUsuario(String(data.nombres));
             }
+            if (data?.is_staff) {
+                setIsStaff(data.is_staff);
+            }
+            if (data?.is_superuser) {
+                setIsSuperuser(data.is_superuser);
+            }
             } catch (err) {
-            console.error("No se pudo obtener el nombre del usuario:", err);
+            console.error("No se pudo obtener el usuario:", err);
             }
         };
 
@@ -341,6 +351,9 @@ const Mapa = () => {
             <Configuracion onClose={() => setMostrarConfiguracion(false)} />
         )}
 
+        {mostrarUsuarios && (
+            <ListadoUsuarios onClose={() => setMostrarUsuarios(false)} />
+        )}
 
         {puntoSeleccionado && (
             <PuntoPopupWrapper punto={puntoSeleccionado} onClose={() => setPuntoSeleccionado(null)} />
@@ -348,10 +361,15 @@ const Mapa = () => {
         {menuVisible && (
         <Menu
             nombreUsuario={nombreUsuario}
+            isStaff={isStaff}
             onClose={() => setMenuVisible(false)}
             onAbrirConfiguracion={() => {
             setMenuVisible(false);
             setMostrarConfiguracion(true);
+            }}
+            onAbrirUsuarios={() => {
+            setMenuVisible(false);
+            setMostrarUsuarios(true);
             }}
             onCerrarSesion={handleCerrarSesion}
         />
@@ -491,6 +509,7 @@ const Mapa = () => {
     function handleCerrarSesion() {
         setMostrarIntro(true);
         setMostrarConfiguracion(false);
+        setMostrarUsuarios(false);
         setFormVisible(false);
         setPuntoSeleccionado(null);
         setMenuVisible(false);

@@ -24,7 +24,7 @@ class PuntoSerializer(serializers.ModelSerializer):
             'latitud', 'longitud', 'fecha',
             'cultivos', 'cambios',
             'temperatura', 'humedad', 'viento',
-            'fotos',
+            'fotos', 'mail',
         ]
 
 class RegistroSerializer(serializers.ModelSerializer):
@@ -54,3 +54,13 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("Credenciales inválidas")
         data["user"] = user
         return data
+    
+class UsuarioAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = ['id', 'nombres', 'apellidos', 'email', 'is_superuser']
+
+class UsuarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = ["email", "nombres", "apellidos"]

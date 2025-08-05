@@ -186,6 +186,17 @@ body.fuente-grande {
   color: #555;
 }
 
+/* Usuario */
+.punto-creado-por {
+  color: #888; /* gris */
+  font-size: 0.9em;
+  margin-top: -20px;
+  padding: 0;
+  line-height: 1.2;
+  text-align: center;
+}
+
+
 /* Botón principal */
 button.primary-button {
   background-color: #1976d2 !important;

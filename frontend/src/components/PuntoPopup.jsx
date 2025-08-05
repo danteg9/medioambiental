@@ -5,7 +5,10 @@ const PuntoPopup = ({ punto, onClose }) => {
   const [seccionActiva, setSeccionActiva] = useState("geografica");
   const fotos = punto.fotos || [];
   const [fotoSeleccionada, setFotoSeleccionada] = useState(null);
+  const [nombreUsuario, setNombreUsuario] = useState(null);
   const [fotoIndex, setFotoIndex] = useState(0);
+
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const modalRef = useRef(null); // para atrapar foco
   const cerrarBtnRef = useRef(null); // foco inicial
@@ -46,6 +49,34 @@ const PuntoPopup = ({ punto, onClose }) => {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
+  useEffect(() => {
+  const fetchUsuario = async () => {
+    if (!punto.mail) return;
+
+    try {
+      const token = localStorage.getItem("access_token");
+      const response = await fetch(`${API_URL}/api/usuarios/email/?email=${encodeURIComponent(punto.mail)}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setNombreUsuario(`${data.nombres} ${data.apellidos}`);
+      } else {
+        setNombreUsuario("Usuario desconocido");
+      }
+    } catch (error) {
+      console.error("Error obteniendo usuario:", error);
+      setNombreUsuario("Usuario desconocido");
+    }
+  };
+
+  fetchUsuario();
+}, [punto.mail]);
+
+
   return (
     <div className="punto-form-overlay">
       <div
@@ -56,6 +87,12 @@ const PuntoPopup = ({ punto, onClose }) => {
         ref={modalRef}
       >
         <h2 id="popup-title">{punto.nombre || "Información del punto"}</h2>
+
+        {nombreUsuario && (
+          <div className="punto-creado-por">
+            Creado por: {nombreUsuario}
+          </div>
+        )}
 
         <div className="seccion-tabs" role="tablist" aria-label="Secciones del punto">
           {secciones.map(({ clave, etiqueta }) => (

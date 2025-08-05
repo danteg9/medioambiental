@@ -1,0 +1,59 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.tabla-usuarios {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.tabla-usuarios th,
+.tabla-usuarios td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.tabla-usuarios th {
+  background-color: #f0f0f0;
+}
+
+.tabla-usuarios button {
+  padding: 4px 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.botones {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.botones .cerrar {
+  background-color: #ccc;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}

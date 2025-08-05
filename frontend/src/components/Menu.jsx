@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "./Menu.css";
 
-const Menu = ({ nombreUsuario, onAbrirConfiguracion, onCerrarSesion }) => {
+const Menu = ({ nombreUsuario, isStaff, onAbrirConfiguracion, onCerrarSesion, onAbrirUsuarios }) => {
   const menuRef = useRef(null);
   const confirmarBtnRef = useRef(null);
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
@@ -46,6 +46,17 @@ const Menu = ({ nombreUsuario, onAbrirConfiguracion, onCerrarSesion }) => {
           Configuración
         </button>
 
+        {isStaff && (
+          <button
+            className="boton-principal"
+            onClick={onAbrirUsuarios}
+            aria-label="Administrar usuarios"
+            style={{ marginTop: "10px" }}
+          >
+            Usuarios
+          </button>
+        )}
+
         <button
           className="boton-principal cerrar-sesion"
           onClick={() => setMostrarConfirmacion(true)}
@@ -81,5 +92,6 @@ const Menu = ({ nombreUsuario, onAbrirConfiguracion, onCerrarSesion }) => {
     </>
   );
 };
+
 
 export default Menu;
