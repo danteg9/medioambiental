@@ -173,6 +173,12 @@ const Mapa = () => {
     }
     };
 
+    const cargarPuntos = async () => {
+        const res = await fetchConTokenRenovable(`${API_URL}/api/puntos/listar/`);
+        const data = await res.json();
+        setPuntos(data);
+    };
+
     useEffect(() => {
         const mapContainer = document.querySelector('.leaflet-container');
         if (!mapContainer) return;
@@ -211,7 +217,7 @@ const Mapa = () => {
     useEffect(() => {
         const token = localStorage.getItem("access_token");
         const tutorialCompletado = localStorage.getItem("tutorial_completado");
-        if (token && !tutorialCompletado) {
+        if (token && !tutorialCompletado || tutorialCompletado === "false") {
             setMostrarTutorial(true);
         } else {
             setMostrarTutorial(false);
@@ -273,7 +279,8 @@ const Mapa = () => {
         >
         {menuVisible ? "✕" : "☰"}
         </button>
-
+        
+        {isSuperuser && (
         <button
             className={`boton-agregar ${modoAgregar ? "activo" : ""}`}
             onClick={forzarAgregar}
@@ -282,7 +289,7 @@ const Mapa = () => {
             role="button"
         >
             +
-        </button>
+        </button>)}
 
         {modoAgregar && (
         <button
@@ -298,6 +305,7 @@ const Mapa = () => {
             ✕
         </button>
         )}
+        
 
         <MapContainer
             center={[-34.6, -58.4]}
@@ -356,7 +364,7 @@ const Mapa = () => {
         )}
 
         {puntoSeleccionado && (
-            <PuntoPopupWrapper punto={puntoSeleccionado} onClose={() => setPuntoSeleccionado(null)} />
+            <PuntoPopupWrapper punto={puntoSeleccionado} onClose={() => setPuntoSeleccionado(null)} recargarPuntos={cargarPuntos} />
         )}
         {menuVisible && (
         <Menu

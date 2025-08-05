@@ -126,3 +126,27 @@ def obtener_usuario_por_email(request):
         return Response(serializer.data)
     except Usuario.DoesNotExist:
         return Response({"error": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def eliminar_punto(request, punto_id):
+    try:
+        punto = Punto.objects.get(id=punto_id)
+    except Punto.DoesNotExist:
+        return Response({"detail": "Punto no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+
+    if punto.mail != request.user.email:
+        return Response({"detail": "No tenés permiso para borrar este punto."}, status=status.HTTP_403_FORBIDDEN)
+
+    punto.delete()
+    return Response({"detail": "Punto eliminado correctamente."}, status=status.HTTP_204_NO_CONTENT)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def yo(request):
+    user = request.user
+    return Response({
+        "email": user.email,
+        "nombres": user.nombres,
+        "apellidos": user.apellidos,
+    })

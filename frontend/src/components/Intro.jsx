@@ -60,7 +60,7 @@ const IntroModal = ({ onClose, onLogin, onRegister }) => {
             onClick={() => setShowAcercaDe(true)}
             aria-label="Acerca de esta aplicación"
           >
-            ℹ️
+            Acerca de
           </button>
 
           <h2 id="intro-titulo">Bienvenido</h2>

@@ -14,11 +14,40 @@ const PuntoPopup = ({ punto, onClose }) => {
   const cerrarBtnRef = useRef(null); // foco inicial
   const ultimoActivoRef = useRef(null);
 
+  const [miMail, setMiMail] = useState(null);
+  const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
+
+
+
   const secciones = [
     { clave: "geografica", etiqueta: "Geográfica" },
     { clave: "rural", etiqueta: "Rural" },
     { clave: "climatica", etiqueta: "Climática" },
   ];
+
+  useEffect(() => {
+    const fetchMiUsuario = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        const res = await fetch(`${API_URL}/api/usuarios/yo/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setMiMail(data.email);
+        }
+      } catch (error) {
+        console.error("Error al obtener mi usuario:", error);
+      }
+    };
+
+    fetchMiUsuario();
+  }, []);
+
+
+
 
   // Enfoque inicial y trampa de foco
   useEffect(() => {
@@ -50,32 +79,52 @@ const PuntoPopup = ({ punto, onClose }) => {
   }, [onClose]);
 
   useEffect(() => {
-  const fetchUsuario = async () => {
-    if (!punto.mail) return;
+    const fetchUsuario = async () => {
+      if (!punto.mail) return;
 
-    try {
-      const token = localStorage.getItem("access_token");
-      const response = await fetch(`${API_URL}/api/usuarios/email/?email=${encodeURIComponent(punto.mail)}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      try {
+        const token = localStorage.getItem("access_token");
+        const response = await fetch(`${API_URL}/api/usuarios/email/?email=${encodeURIComponent(punto.mail)}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      if (response.ok) {
-        const data = await response.json();
-        setNombreUsuario(`${data.nombres} ${data.apellidos}`);
-      } else {
+        if (response.ok) {
+          const data = await response.json();
+          setNombreUsuario(`${data.nombres} ${data.apellidos}`);
+        } else {
+          setNombreUsuario("Usuario desconocido");
+        }
+      } catch (error) {
+        console.error("Error obteniendo usuario:", error);
         setNombreUsuario("Usuario desconocido");
       }
-    } catch (error) {
-      console.error("Error obteniendo usuario:", error);
-      setNombreUsuario("Usuario desconocido");
+    };
+    fetchUsuario();
+  }, [punto.mail]);
+
+const borrarPunto = async () => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await fetch(`${API_URL}/api/puntos/${punto.id}/eliminar/`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 204) {
+      onClose();
+    } else {
+      const data = await response.json();
+      alert(data.detail || "Error al borrar el punto.");
     }
-  };
-
-  fetchUsuario();
-}, [punto.mail]);
-
+  } catch (error) {
+    console.error("Error al borrar punto:", error);
+    alert("Error al borrar el punto.");
+  }
+};
 
   return (
     <div className="punto-form-overlay">
@@ -193,6 +242,11 @@ const PuntoPopup = ({ punto, onClose }) => {
         </div>
 
         <div className="form-buttons">
+          {miMail === punto.mail && (
+            <button type="button" className="borrar-btn" onClick={() => setMostrarConfirmacion(true)}>
+              Borrar punto
+            </button>
+          )}
           <button type="button" onClick={onClose} ref={cerrarBtnRef}>
             Cerrar
           </button>
@@ -283,6 +337,27 @@ const PuntoPopup = ({ punto, onClose }) => {
           </div>
         </div>
       )}
+      {mostrarConfirmacion && (
+        <div
+          className="modal-confirm"
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="confirm-delete-title"
+          aria-describedby="confirm-delete-desc"
+        >
+          <div className="modal">
+            <h3 id="confirm-delete-title">¿Borrar punto?</h3>
+            <p id="confirm-delete-desc">¿Estás seguro de que querés borrar este punto?</p>
+            <div className="botones">
+              <button onClick={borrarPunto}>Sí, borrar</button>
+              <button className="cerrar" onClick={() => setMostrarConfirmacion(false)}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

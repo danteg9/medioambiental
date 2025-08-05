@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import crear_punto, listar_puntos, registro, login, obtener_usuario, listar_usuarios_admin, toggle_superuser, obtener_usuario_por_email
+from .views import crear_punto, listar_puntos, registro, login, obtener_usuario, listar_usuarios_admin, toggle_superuser, obtener_usuario_por_email, eliminar_punto, yo
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
@@ -13,4 +13,6 @@ urlpatterns = [
     path('usuarios/admin/', listar_usuarios_admin, name='listar_usuarios_admin'),
     path('usuarios/admin/<int:pk>/toggle_superuser/', toggle_superuser, name='toggle_superuser'),
     path('usuarios/email/', obtener_usuario_por_email, name='obtener_usuario_por_email'),
+    path('puntos/<int:punto_id>/eliminar/', eliminar_punto, name='eliminar_punto'),
+    path('usuarios/yo/', yo, name='yo'),
 ]
